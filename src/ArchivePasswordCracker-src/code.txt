@@ -1,0 +1,73 @@
+# ============================================================
+#  ArchivePasswordCracker 起始字典
+#
+#  · 一行一个密码
+#  · 以 # 开头的是注释，程序会跳过
+#  · 行首行尾的空白会被自动去掉
+#  · 编码 UTF-8 / GBK 都能识别
+#
+#  请把你自己常用的密码加进来 —— 字典越贴近你的习惯，命中率越高。
+# ============================================================
+
+# ---- 常见弱口令 ----
+123456
+12345678
+123456789
+1234567890
+password
+password1
+password123
+passw0rd
+p@ssw0rd
+123123
+111111
+000000
+666666
+888888
+abc123
+abc123456
+qwerty
+qwerty123
+qwertyuiop
+1qaz2wsx
+1qazxsw2
+qazwsx
+zxcvbnm
+asdfgh
+asdfghjkl
+admin
+admin123
+root
+toor
+letmein
+welcome
+welcome123
+changeme
+iloveyou
+monkey
+dragon
+sunshine
+princess
+football
+baseball
+superman
+trustno1
+master
+shadow
+michael
+jordan
+0000
+1111
+2222
+5201314
+1314520
+woaini
+woaini1314
+nihao
+hello
+hello123
+test
+test123
+guest
+temp
+123abc
