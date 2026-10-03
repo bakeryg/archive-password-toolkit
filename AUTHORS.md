@@ -33,7 +33,7 @@ README / AUTHORS documents.
 - [GoogleLLP/Archive-password-cracker](https://github.com/GoogleLLP/Archive-password-cracker)
 - 原作者 / Original author: **宗祥瑞**
 
-### 引擎 / engine
+### 破解引擎 / Cracking engine
 
 - [Bandizip](https://www.bandisoft.com/bandizip/) 的命令行工具 `bz.exe`
 - Copyright (c) Bandisoft。本项目**只调用使用者本机已安装的** Bandizip，
@@ -49,5 +49,5 @@ README / AUTHORS documents.
 ## 二次分发时请注意 / If you fork or redistribute
 
 - MIT 的全部要求就是**保留版权声明与许可文本** —— 请勿删除本文件和 `LICENSE`。
-- 界面文件的上游署名请一并保留，说明见 `LICENSE` 底部。
+- 界面文件的上游署名（见上文「界面文件 / Interface files」）请一并保留。
 - 如果改动了本项目，请在 commit 里如实说明；不要把他人的成果改个名字当成自己的。

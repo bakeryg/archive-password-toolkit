@@ -17,8 +17,8 @@ found_password.txt
 
 # ---- 构建产物 ----
 # 源码仓库里不放编译出来的 exe（exe 只作为 Release 附件发布）。
-# 如果你确实想把 exe 也提交进仓库，把下面三行删掉即可。
-# windres/gcc 编译中间文件
+# *.o 是 windres/gcc 的编译中间文件。
+# 如果你确实想把编译产物也提交进仓库，把下面这几行删掉即可。
 *.o
 ArchivePasswordToolkit.exe
 main.exe

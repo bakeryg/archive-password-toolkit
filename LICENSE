@@ -19,16 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
---------------------------------------------------------------------------
-说明 / Note
-
-本项目的界面文件（ui_mainwindow.py / ui_aboutdialog.py）由开源项目
-GoogleLLP/Archive-password-cracker 的 Qt Designer .ui 文件转换而来，
-原作者为 宗祥瑞。破解引擎使用 Bandisoft 的 Bandizip 命令行工具 bz.exe。
-
-The UI files (ui_mainwindow.py / ui_aboutdialog.py) in this project were
-generated from the Qt Designer .ui files of the open-source project
-GoogleLLP/Archive-password-cracker. The cracking engine is the Bandizip
-command-line tool (bz.exe) by Bandisoft.
---------------------------------------------------------------------------
