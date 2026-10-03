@@ -31,8 +31,8 @@ import time
 from PySide6.QtCore import Qt, QPoint, QThread, QTimer, QUrl, Signal
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (QApplication, QDialog, QFileDialog, QHBoxLayout,
-                               QLabel, QMainWindow, QMenu, QMessageBox,
-                               QPushButton, QVBoxLayout, QWidget)
+                               QInputDialog, QLabel, QLineEdit, QMainWindow, QMenu,
+                               QMessageBox, QPushButton, QVBoxLayout, QWidget)
 
 from ui_mainwindow import Ui_MainWindow
 from ui_aboutdialog import Ui_Dialog
@@ -386,7 +386,7 @@ class DropArea(QLabel):
 class CrackWorker(QThread):
     progress = Signal(int)
     found = Signal(str)
-    notfound = Signal()
+    notfound = Signal(int)      # 参数＝已经试过的候选数
     error = Signal(str)
     info = Signal(str)
 
@@ -443,7 +443,7 @@ class CrackWorker(QThread):
         elif self._result is not None:
             self.found.emit(self._result)
         else:
-            self.notfound.emit()
+            self.notfound.emit(self._done)
 
     # ---------------- 入口 ----------------
     def run(self):
@@ -570,6 +570,41 @@ class CrackWorker(QThread):
 # ----------------------------------------------------------------------
 # 导出字典线程
 # ----------------------------------------------------------------------
+class ExtractWorker(QThread):
+    """手动解压（点「解压位置」那一行右边的「解压」按钮时跑）。
+
+    破解成功后本来就会自动解压，这个线程是给两种情况用的：
+      * 破解时没填解压位置，事后想解压；
+      * 密码已经知道（直接填在「密码是」框里），想再解一次。
+
+    bz.exe 解压期间无法中断，所以 stop() 只是占位，保证关闭窗口的流程不报错。
+    """
+    done = Signal(str)
+    failed = Signal(str)
+
+    def __init__(self, bz, archive, pwd, outdir, parent=None):
+        QThread.__init__(self, parent)
+        self.bz = bz
+        self.archive = archive
+        self.pwd = pwd
+        self.outdir = outdir
+
+    def stop(self):
+        pass
+
+    def run(self):
+        try:
+            if not os.path.isdir(self.outdir):
+                os.makedirs(self.outdir, exist_ok=True)
+        except OSError as e:
+            self.failed.emit("解压目录无法创建：%s" % e)
+            return
+        if bz_extract(self.bz, self.archive, self.pwd, self.outdir):
+            self.done.emit(self.outdir)
+        else:
+            self.failed.emit("解压失败：密码不对、压缩包损坏，或目录没有写权限。")
+
+
 class ExportWorker(QThread):
     progress = Signal(int)
     finished_ok = Signal(str, int)
@@ -642,6 +677,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.bz = find_bz()
         self.crack_worker = None
         self.export_worker = None
+        self.last_mode = "external"     # 这次跑的是字典还是枚举（给"没找到"的提示用）
+        self.last_dict = None           # 这次用的字典路径
+        self.extract_worker = None      # 手动解压线程
         self.about_dlg = None
 
         # 字典历史：优先沿用上次用的（若文件还在），否则用 code.txt
@@ -672,6 +710,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # 把「当前字典 + 选择/历史 + 拖入框」并进「使用自定义字典」页
         self._build_drop_area()
+        self._build_extract_button()
 
         # 主内容是「自定义字典 + 拖入」，所以把它排到第一个并默认打开，
         # 「枚举破解」（现场枚举）降为第二页
@@ -834,6 +873,67 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.drop_area = DropArea(page)
         self.drop_area.dropped.connect(self.on_drop_file)
         lay.addWidget(self.drop_area, 3, 0, 1, 3)
+
+    def _build_extract_button(self):
+        """在「解压位置」那一行加一个手动解压按钮。"""
+        self.btn_extract = QPushButton("解压", self.groupBox)
+        self.btn_extract.setToolTip("用「密码是」框里的密码，解压到上面的解压位置。\n"
+                                    "密码框为空时会先弹窗问你要密码。")
+        self.btn_extract.clicked.connect(self.on_extract_clicked)
+        lay = getattr(self, "horizontalLayout_4", None)      # 「解压位置」那一行
+        if lay is not None:
+            lay.addWidget(self.btn_extract)
+        else:
+            self.verticalLayout.addWidget(self.btn_extract)
+
+    def on_extract_clicked(self):
+        if self.extract_worker is not None and self.extract_worker.isRunning():
+            return
+        archive = self.zipfile_path.text().strip()
+        if not archive or not os.path.isfile(archive):
+            QMessageBox.warning(self, MSG_WARNING, "请选择压缩文件路径")
+            return
+        if not self.bz:
+            self.bz = find_bz()
+        if not self.bz:
+            QMessageBox.warning(self, MSG_WARNING,
+                                "没找到 bz.exe，无法解压。\n\n"
+                                "请安装 Bandizip（默认目录），或双击运行本目录下的\n"
+                                "「检测Bandizip.bat」自动定位并记录路径。")
+            return
+        outdir = self.extract_path.text().strip()
+        if not outdir:
+            outdir = QFileDialog.getExistingDirectory(self, "选择解压位置",
+                                                      os.path.dirname(archive))
+            if not outdir:
+                return
+            self.extract_path.setText(outdir)
+        if os.path.isfile(outdir):
+            QMessageBox.warning(self, MSG_WARNING, "解压位置是个文件，请选一个目录。")
+            return
+        pwd = self.password.text()          # 破解成功后密码就填在这里
+        if not pwd:
+            pwd, ok = QInputDialog.getText(self, "输入密码",
+                                           "压缩包密码：", QLineEdit.Password)
+            if not ok or not pwd:
+                return
+        self.btn_extract.setEnabled(False)
+        self.statusbar.showMessage("正在解压到 %s …" % outdir)
+        self.extract_worker = ExtractWorker(self.bz, archive, pwd, outdir, self)
+        self.extract_worker.done.connect(self.on_extract_done)
+        self.extract_worker.failed.connect(self.on_extract_failed)
+        self.extract_worker.start()
+
+    def on_extract_done(self, outdir):
+        self.btn_extract.setEnabled(True)
+        self.extract_worker = None
+        self.statusbar.showMessage("已解压到 %s" % outdir)
+
+    def on_extract_failed(self, msg):
+        self.btn_extract.setEnabled(True)
+        self.extract_worker = None
+        self.statusbar.showMessage(msg)
+        QMessageBox.warning(self, MSG_WARNING, msg)
 
     def on_drop_file(self, path):
         if not path or not os.path.isfile(path):
@@ -1001,6 +1101,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                     "这个压缩包没有加密，不需要密码，可以直接解压。")
             return
 
+        self.last_mode = mode
+
         if mode == "internal":
             if not self.validate_bool():
                 return
@@ -1024,6 +1126,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if total <= 0:
                 QMessageBox.warning(self, MSG_WARNING, "字典里没有有效密码")
                 return
+            self.last_dict = path
             source = iter_passwords(path)
             src_desc = "字典: %s  约 %d 行" % (path, total)
 
@@ -1060,18 +1163,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     ("破解成功，密码是: %s  |  已解压到 %s" % (pwd, outdir)) if ok
                     else ("破解成功，密码是: %s  |  解压失败" % pwd))
 
-    def on_crack_notfound(self):
+    def on_crack_notfound(self, done=0):
         self.progress_crack.setValue(100)
         self.password.setText("")
-        self.statusbar.showMessage("破解失败，没找到密码")
-        self.drop_area.setText("没找到密码，可把更多密码加进 code.txt 再试")
+        tried = ("（已试 %d 条）" % int(done or 0)) if done else ""
+        self.statusbar.showMessage("破解失败，没找到密码%s" % tried)
+        if getattr(self, "last_mode", "external") == "internal":
+            self.drop_area.setText("枚举范围跑完，没找到密码%s\n"
+                                   "可扩大字符集或位数范围再试" % tried)
+        else:
+            name = os.path.basename(getattr(self, "last_dict", None) or self.current_dict or "")
+            if name:
+                self.drop_area.setText("没找到密码%s\n可把更多密码加进当前字典（%s）再试"
+                                       % (tried, name))
+            else:
+                self.drop_area.setText("没找到密码%s\n可把更多密码加进当前字典再试" % tried)
 
     def _crack_finished(self):
         self.button_crack.setText(START_CRACK)
         self.crack_worker = None
 
     def closeEvent(self, e):
-        for w in (self.crack_worker, self.export_worker):
+        for w in (self.crack_worker, self.export_worker, self.extract_worker):
             if w is not None and w.isRunning():
                 w.stop()
                 w.wait(2000)

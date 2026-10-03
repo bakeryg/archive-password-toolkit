@@ -94,6 +94,10 @@ Alternatively, create `bz_path.txt` yourself containing a single line: the full 
 4. Optionally choose an extraction folder (leave it empty to only display the password).
 5. Click **Start**.
 
+Extraction happens automatically once a password is found and that folder is set. To extract
+later — or to extract with a password you already know — fill in the folder and click
+**解压** (Extract) next to it. If the password box is empty you will be asked for the password.
+
 ### Working directory (keep it off your system drive)
 
 Everything the program writes — the dictionary history, its cache and its **temporary
@@ -364,6 +368,9 @@ Only builds published from the repository above are official. To check what you 
    - （也可以点一下蓝框用文件对话框选压缩包）
 3. 想改用穷举：切到「**枚举破解**」页，勾字符集、设位数，直接「开始破解」（也可以先「导出字典」）
 4. 可选：选一个解压位置（留空则只显示密码、不解压）
+
+命中密码后，如果填了解压位置会自动解压；也可以随时点那一行右边的「**解压**」按钮手动解压 ——
+已经知道密码就直接填在「密码是」框里，框是空的会弹窗问你要密码。
 
 ### 工作目录（把文件挪出系统盘）
 
