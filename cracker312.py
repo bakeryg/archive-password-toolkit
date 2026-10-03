@@ -238,6 +238,16 @@ def bz_test(bz, archive, pwd, timeout=180):
         return False
 
 
+def bz_encrypted_probe(bz, archive):
+    """用一个随机生成的、不可能正确的密码再测一次，用来识别「根本没加密」的压缩包。
+
+    bz.exe 对**未加密**的压缩包会给任何密码都返回 0（All OK），所以：
+      * 这个瞎编的密码也能通过 → 包没有加密，之前那个"命中"是假象；
+      * 返回非 0              → 包确实加密了，命中的密码才算数。
+    """
+    return bz_test(bz, archive, "apc-probe-" + os.urandom(16).hex())
+
+
 def bz_extract(bz, archive, pwd, outdir, timeout=3600):
     try:
         r = subprocess.run([bz, "x", "-p:" + pwd, "-y", "-o:" + outdir, archive],
@@ -393,6 +403,7 @@ class CrackWorker(QThread):
         self._done = 0
         self._lock = threading.Lock()
         self._result = None
+        self._unencrypted = False       # 命中后复验发现"这个包根本没加密"
         self._last_emit = 0.0
 
     def stop(self):
@@ -419,11 +430,19 @@ class CrackWorker(QThread):
             self.progress.emit(min(99, int(done * 100 / self.total)))
 
     def _finish(self):
-        if self._result is not None:
-            self.progress.emit(100)
+        # 命中后复验：未加密的压缩包对任何密码都返回 0，
+        # 拿一个随机瞎编的密码测一次就能识别出来 —— 不然界面会显示一个"随机密码"。
+        if self._result is not None and bz_encrypted_probe(self.bz, self.archive):
+            with self._lock:
+                self._result = None
+            self._unencrypted = True
+
+        self.progress.emit(100)
+        if self._unencrypted:
+            self.error.emit("这个压缩包没有加密，不需要密码。")
+        elif self._result is not None:
             self.found.emit(self._result)
         else:
-            self.progress.emit(100)
             self.notfound.emit()
 
     # ---------------- 入口 ----------------
@@ -968,6 +987,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                 "「检测Bandizip.bat」自动定位并记录路径。")
             return
         self.statusbar.showMessage("引擎: %s" % self.bz)
+
+        # 未加密的 zip：加密标志位就在目录头里，瞬间就能判断，
+        # 免得白试一遍、更不会把第一个候选密码当成答案显示出来。
+        try:
+            _pr = zipprobe.ZipProbe(archive)
+            _plain_zip = (_pr.kind is None) and (_pr.encrypted is False)
+            _pr.close()
+        except Exception:
+            _plain_zip = False
+        if _plain_zip:
+            QMessageBox.information(self, MSG_WARNING,
+                                    "这个压缩包没有加密，不需要密码，可以直接解压。")
+            return
 
         if mode == "internal":
             if not self.validate_bool():

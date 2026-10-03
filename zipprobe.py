@@ -62,6 +62,7 @@ class ZipProbe(object):
     def __init__(self, path):
         self.usable = False
         self.kind = None          # "zipcrypto" / "aes"
+        self.encrypted = None     # True=有加密条目 / False=确认没加密 / None=判断不了
         self.reason = ""
         self._f = None
         self._entry = None
@@ -102,6 +103,7 @@ class ZipProbe(object):
                 pass
 
         if info is None:
+            self.encrypted = False      # 结构解析成功，但一个加密条目都没有
             return self._fail("没有加密条目")
 
         try:
@@ -158,6 +160,7 @@ class ZipProbe(object):
                 return self._fail("AES salt/verifier 不完整")
             self.kind = "aes"
             self.usable = True
+            self.encrypted = True
             return
 
         # ---------------- ZipCrypto ----------------
@@ -177,6 +180,7 @@ class ZipProbe(object):
         self._method = method
         self.kind = "zipcrypto"
         self.usable = True
+        self.encrypted = True
 
     # ------------------------------------------------------------------
     def _candidates_bytes(self, password):
