@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# ArchivePasswordCracker —— 基于 Bandizip 引擎的压缩包密码破解工具
+# Archive Password Toolkit —— 基于 Bandizip 引擎的压缩包密码破解工具
 # Copyright (c) 2026 bakeryg
 # SPDX-License-Identifier: MIT
-# 项目地址: https://github.com/bakeryg/ArchivePasswordCracker
+# 项目地址: https://github.com/bakeryg/archive-password-toolkit
 # ---------------------------------------------------------------------------
 """
-cracker312.py —— ArchivePasswordCracker 的 Python 3.12 + PySide6 版本
+cracker312.py —— Archive Password Toolkit 的 Python 3.12 + PySide6 版本
 
 特点
   * 界面文件由 Qt Designer 的 .ui 只读转换而来（来源说明见 README / LICENSE）
@@ -66,9 +66,9 @@ START_EXPORT = "开始导出"
 STOP_EXPORT = "停止导出"
 
 CREATE_NO_WINDOW = 0x08000000
-APP_NAME = "ArchivePasswordCracker"
+APP_NAME = "Archive Password Toolkit"
 # 上传到自己的仓库后，把下面这行改成你的项目地址
-APP_URL = "https://github.com/bakeryg/ArchivePasswordCracker"
+APP_URL = "https://github.com/bakeryg/archive-password-toolkit"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 

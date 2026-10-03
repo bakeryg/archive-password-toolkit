@@ -1,13 +1,13 @@
 /* ============================================================
- * launcher.c —— ArchivePasswordCracker 启动壳（启动器源码）
+ * launcher.c —— Archive Password Toolkit 启动壳（启动器源码）
  *
  * Copyright (c) 2026 bakeryg
  * SPDX-License-Identifier: MIT
- * 项目地址: https://github.com/bakeryg/ArchivePasswordCracker
+ * 项目地址: https://github.com/bakeryg/archive-password-toolkit
  *
  * 编译（MinGW-w64）：
  *     windres icon.rc -O coff -o icon_res.o
- *     gcc -O2 -municode -mwindows -o ArchivePasswordCracker.exe launcher.c icon_res.o
+ *     gcc -O2 -municode -mwindows -o ArchivePasswordToolkit.exe launcher.c icon_res.o
  *
  * 行为：
  *   1. 找脚本：<本目录>\cracker312\cracker312.py 优先；

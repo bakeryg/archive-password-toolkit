@@ -3,7 +3,7 @@
 # 本文件由 Qt Designer 的 .ui 文件经 pyside6-uic 转换而来；原始 .ui 的来源与署名见
 # LICENSE / AUTHORS.md。本项目对转换结果所做的修改：
 # Copyright (c) 2026 bakeryg  —  SPDX-License-Identifier: MIT
-# 项目地址: https://github.com/bakeryg/ArchivePasswordCracker
+# 项目地址: https://github.com/bakeryg/archive-password-toolkit
 #
 ################################################################################
 ## Form generated from reading UI file 'AboutDialog.ui'
@@ -83,7 +83,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"\u5173\u4e8e\u8f6f\u4ef6", None))
-        self.label_2.setText(QCoreApplication.translate("Dialog", u"ArchivePasswordCracker\n"
+        self.label_2.setText(QCoreApplication.translate("Dialog", u"Archive Password Toolkit\n"
 "\n"
 "作者：bakeryg\n"
 "\n"

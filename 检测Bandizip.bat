@@ -1,11 +1,11 @@
 @echo off
-rem  Copyright (c) 2026 bakeryg - MIT   github.com/bakeryg/ArchivePasswordCracker
+rem  Copyright (c) 2026 bakeryg - MIT   github.com/bakeryg/archive-password-toolkit
 setlocal EnableExtensions
-title Bandizip detector - ArchivePasswordCracker
+title Bandizip detector - Archive Password Toolkit
 
 echo ============================================================
 echo   Bandizip 检测工具  /  Bandizip detector
-echo   给 ArchivePasswordCracker 使用
+echo   给 Archive Password Toolkit 使用
 echo ============================================================
 echo.
 
@@ -47,10 +47,10 @@ echo     %BZPATH%
 echo.
 > "%~dp0bz_path.txt" echo %BZPATH%
 echo   已写入 bz_path.txt   (saved to bz_path.txt)
-echo   ArchivePasswordCracker 启动时会自动读取它
+echo   Archive Password Toolkit 启动时会自动读取它
 echo.
 echo ------------------------------------------------------------
-echo   现在可以启动 ArchivePasswordCracker.exe 了
+echo   现在可以启动 ArchivePasswordToolkit.exe 了
 goto :end
 
 :notfound

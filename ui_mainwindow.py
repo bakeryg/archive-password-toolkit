@@ -3,7 +3,7 @@
 # 本文件由 Qt Designer 的 .ui 文件经 pyside6-uic 转换而来；原始 .ui 的来源与署名见
 # LICENSE / AUTHORS.md。本项目对转换结果所做的修改：
 # Copyright (c) 2026 bakeryg  —  SPDX-License-Identifier: MIT
-# 项目地址: https://github.com/bakeryg/ArchivePasswordCracker
+# 项目地址: https://github.com/bakeryg/archive-password-toolkit
 #
 ################################################################################
 ## Form generated from reading UI file 'MainWindow.ui'
@@ -337,7 +337,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"ArchivePasswordCracker", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Archive Password Toolkit", None))
 #if QT_CONFIG(tooltip)
         self.dict_source.setToolTip(QCoreApplication.translate("MainWindow", u"切换破解方式", None))
 #endif // QT_CONFIG(tooltip)

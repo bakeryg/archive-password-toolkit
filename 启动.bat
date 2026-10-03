@@ -1,14 +1,14 @@
 @echo off
-rem  Copyright (c) 2026 bakeryg - MIT   github.com/bakeryg/ArchivePasswordCracker
+rem  Copyright (c) 2026 bakeryg - MIT   github.com/bakeryg/archive-password-toolkit
 rem ============================================================
-rem  启动.bat —— 启动 ArchivePasswordCracker
+rem  启动.bat —— 启动 Archive Password Toolkit
 rem
-rem  两个标签页：使用自定义字典（主内容） / 使用内置字典
+rem  两个标签页：使用自定义字典（主内容） / 枚举破解
 rem  引擎：Bandizip 的 bz.exe
 rem ============================================================
 setlocal EnableExtensions
 cd /d "%~dp0"
-title ArchivePasswordCracker
+title Archive Password Toolkit
 
 set "PY="
 py -3 -c "import sys" >nul 2>nul && set "PY=py -3"

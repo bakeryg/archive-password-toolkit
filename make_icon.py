@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# ArchivePasswordCracker —— 图标生成脚本
+# Archive Password Toolkit —— 图标生成脚本
 # Copyright (c) 2026 bakeryg
 # SPDX-License-Identifier: MIT
-# 项目地址: https://github.com/bakeryg/ArchivePasswordCracker
+# 项目地址: https://github.com/bakeryg/archive-password-toolkit
 # ---------------------------------------------------------------------------
 """生成破解器图标：蓝色圆角方块 + 白色挂锁 + 金色锁孔。
 输出 icon.ico（多尺寸）与 icon_preview.png（供肉眼检查）。"""

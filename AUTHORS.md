@@ -2,12 +2,12 @@
 
 ## 本项目 / This project
 
-**ArchivePasswordCracker**
+**Archive Password Toolkit**
 
 | | |
 |---|---|
 | 作者 / Author | **bakeryg** |
-| 项目地址 / Project | <https://github.com/bakeryg/ArchivePasswordCracker> |
+| 项目地址 / Project | <https://github.com/bakeryg/archive-password-toolkit> |
 | 许可 / License | MIT（见 [`LICENSE`](LICENSE) / see [`LICENSE`](LICENSE)） |
 
 Copyright (c) 2026 bakeryg
@@ -33,7 +33,7 @@ README / AUTHORS documents.
 - [GoogleLLP/Archive-password-cracker](https://github.com/GoogleLLP/Archive-password-cracker)
 - 原作者 / Original author: **宗祥瑞**
 
-### 破解引擎 / Cracking engine
+### 引擎 / engine
 
 - [Bandizip](https://www.bandisoft.com/bandizip/) 的命令行工具 `bz.exe`
 - Copyright (c) Bandisoft。本项目**只调用使用者本机已安装的** Bandizip，

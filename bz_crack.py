@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# ArchivePasswordCracker —— 基于 Bandizip 引擎的压缩包密码破解工具（命令行版）
+# Archive Password Toolkit —— 基于 Bandizip 引擎的压缩包密码破解工具（命令行版）
 # Copyright (c) 2026 bakeryg
 # SPDX-License-Identifier: MIT
-# 项目地址: https://github.com/bakeryg/ArchivePasswordCracker
+# 项目地址: https://github.com/bakeryg/archive-password-toolkit
 # ---------------------------------------------------------------------------
 """
 bz_crack.py —— 用 Bandizip 的命令行工具 bz.exe 做字典爆破

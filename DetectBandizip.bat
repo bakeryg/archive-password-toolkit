@@ -1,12 +1,12 @@
 @echo off
-rem  Copyright (c) 2026 bakeryg - MIT   github.com/bakeryg/ArchivePasswordCracker
+rem  Copyright (c) 2026 bakeryg - MIT   github.com/bakeryg/archive-password-toolkit
 setlocal EnableExtensions
 chcp 65001 >nul 2>nul
-title Bandizip detector - ArchivePasswordCracker
+title Bandizip detector - Archive Password Toolkit
 
 echo ============================================================
 echo   Bandizip detector
-echo   for ArchivePasswordCracker
+echo   for Archive Password Toolkit
 echo ============================================================
 echo.
 
@@ -48,10 +48,10 @@ echo     %BZPATH%
 echo.
 > "%~dp0bz_path.txt" echo %BZPATH%
 echo   saved to bz_path.txt
-echo   ArchivePasswordCracker reads this file on startup.
+echo   Archive Password Toolkit reads this file on startup.
 echo.
 echo ------------------------------------------------------------
-echo   You can now run ArchivePasswordCracker.exe
+echo   You can now run ArchivePasswordToolkit.exe
 goto :end
 
 :notfound

@@ -1,5 +1,5 @@
 @echo off
-rem  Copyright (c) 2026 bakeryg - MIT   github.com/bakeryg/ArchivePasswordCracker
+rem  Copyright (c) 2026 bakeryg - MIT   github.com/bakeryg/archive-password-toolkit
 rem ============================================================
 rem  安装依赖.bat —— 一键安装 PySide6（本程序唯一需要装的东西）
 rem
@@ -8,10 +8,10 @@ rem  另外还需要 Python 3.12 和 Bandizip，见 README。
 rem ============================================================
 setlocal EnableExtensions
 cd /d "%~dp0"
-title 安装依赖 - ArchivePasswordCracker
+title 安装依赖 - Archive Password Toolkit
 
 echo ============================================================
-echo   ArchivePasswordCracker 依赖安装
+echo   Archive Password Toolkit 依赖安装
 echo ============================================================
 echo.
 
@@ -50,7 +50,7 @@ if errorlevel 1 goto failed
 
 echo.
 echo ============================================================
-echo   完成！现在可以双击 启动.bat 或 ArchivePasswordCracker.exe
+echo   完成！现在可以双击 启动.bat 或 ArchivePasswordToolkit.exe
 echo ============================================================
 echo.
 pause

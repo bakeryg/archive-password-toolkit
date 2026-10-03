@@ -1,4 +1,4 @@
-# ArchivePasswordCracker
+# Archive Password Toolkit
 
 **English** | [中文](#中文说明)
 
@@ -29,7 +29,7 @@ Two tabs — the first one opens by default:
 
 Other niceties:
 
-- You can also **drop an archive onto `ArchivePasswordCracker.exe` itself**
+- You can also **drop an archive onto `ArchivePasswordToolkit.exe` itself**
 - Multi-threaded (thread count is adjustable in the UI)
 - Live progress bar; stops on the first hit and shows the password
 - Optional automatic extraction once the password is found
@@ -47,7 +47,7 @@ Other niceties:
 | PySide6 | `pip install -r requirements.txt` — or just double-click `安装依赖.bat` |
 | Bandizip | installed (the tool looks for `bz.exe` in the usual install folders) |
 
-> `ArchivePasswordCracker.exe` is a small **launcher** (under 100 KB). It starts
+> `ArchivePasswordToolkit.exe` is a small **launcher** (under 100 KB). It starts
 > `cracker312.py` with your installed Python, which keeps the download tiny and easy to
 > update. Before starting it checks Python and PySide6 and tells you exactly what to
 > install — no more double-click-and-nothing-happens. If you want a fully self-contained
@@ -84,7 +84,7 @@ Alternatively, create `bz_path.txt` yourself containing a single line: the full 
 
 ### GUI
 
-1. Run **`ArchivePasswordCracker.exe`** (or `启动.bat`).
+1. Run **`ArchivePasswordToolkit.exe`** (or `启动.bat`).
 2. You land on the **Custom dictionary** tab (the main one):
    - pick a `.txt` with `选择字典...`, or reuse one from `历史字典 ▾`
    - **drop the archive onto the blue box** — it starts cracking with that wordlist
@@ -146,8 +146,8 @@ resume a long run, `--pw-out` to choose where the found password is recorded,
 ## Layout
 
 ```
-ArchivePasswordCracker\
-├── ArchivePasswordCracker.exe   # launcher - double-click this
+ArchivePasswordToolkit\
+├── ArchivePasswordToolkit.exe   # launcher - double-click this
 ├── cracker312.py                # GUI application (Python 3.12 + PySide6)
 ├── ui_mainwindow.py             # generated from UI/MainWindow.ui
 ├── ui_aboutdialog.py            # generated from UI/AboutDialog.ui
@@ -170,7 +170,7 @@ not in this download. To rebuild it (requires MinGW-w64):
 
 ```bat
 windres icon.rc -O coff -o icon_res.o
-gcc -O2 -municode -mwindows -o ArchivePasswordCracker.exe launcher.c icon_res.o
+gcc -O2 -municode -mwindows -o ArchivePasswordToolkit.exe launcher.c icon_res.o
 ```
 
 ---
@@ -244,7 +244,7 @@ Do not use it against files that are not yours.
 
 ## Author
 
-**bakeryg** — <https://github.com/bakeryg/ArchivePasswordCracker>
+**bakeryg** — <https://github.com/bakeryg/archive-password-toolkit>
 
 MIT licensed; the copyright notice is in [`LICENSE`](LICENSE), and the complete attribution
 (including upstream credits) in [`AUTHORS.md`](AUTHORS.md).
@@ -253,20 +253,20 @@ MIT licensed; the copyright notice is in [`LICENSE`](LICENSE), and the complete 
 
 Only builds published from the repository above are official. To check what you downloaded:
 
-1. **Signed tag** — releases are tagged (`v1.0.0`) and the tag is **signed**, so GitHub shows
+1. **Signed** — releases are tagged (`v1.0.0`) and the tag is **signed**, so GitHub shows
    a *Verified* badge next to it. An unsigned tag, or one whose signature does not verify,
    is not from the author.
 2. **SHA256** — compare the file you downloaded with the value in the release notes:
 
    ```bat
-   certutil -hashfile ArchivePasswordCracker.zip SHA256
+   certutil -hashfile ArchivePasswordToolkit.zip SHA256
    ```
 
 3. **Commit history** — every commit is tied to the author's account and timestamped by
    GitHub, and predates any copy of this code found elsewhere.
 
 > A "release" that claims to be this project but does not come from
-> `github.com/bakeryg/ArchivePasswordCracker` should be treated as unreviewed third-party code.
+> `github.com/bakeryg/archive-password-toolkit` should be treated as unreviewed third-party code.
 
 ## Credits
 
@@ -279,7 +279,7 @@ Only builds published from the repository above are official. To check what you 
 
 # 中文说明
 
-[English](#archivepasswordcracker) | **中文**
+[English](#archive-password-toolkit) | **中文**
 
 **作者：[bakeryg](https://github.com/bakeryg)** · MIT 许可 · 署名与第三方来源见 [`AUTHORS.md`](AUTHORS.md)
 
@@ -307,7 +307,7 @@ Only builds published from the repository above are official. To check what you 
 
 其它：
 
-- 也可以直接把压缩包**拖到 `ArchivePasswordCracker.exe` 图标上**
+- 也可以直接把压缩包**拖到 `ArchivePasswordToolkit.exe` 图标上**
 - 多线程并发（界面上的「使用核心数量」可调）
 - 进度条实时显示，命中即停并显示密码
 - 命中后可选自动解压到指定目录
@@ -324,7 +324,7 @@ Only builds published from the repository above are official. To check what you 
 | PySide6 | `pip install -r requirements.txt`，或者直接双击 `安装依赖.bat` |
 | Bandizip | 已安装（程序会在常见安装目录里找 `bz.exe`） |
 
-> `ArchivePasswordCracker.exe` 是一个小体积**启动器**（不到 100 KB），它负责调用你本机的
+> `ArchivePasswordToolkit.exe` 是一个小体积**启动器**（不到 100 KB），它负责调用你本机的
 > Python 去运行 `cracker312.py`。这样下载体积小、更新也方便；启动前它会先检查 Python 和
 > PySide6，缺什么就直接告诉你装什么，不会出现双击了没反应的情况。
 > 如果你想要完全独立的单体 exe，可以自己用 PyInstaller 打包。
@@ -357,7 +357,7 @@ Only builds published from the repository above are official. To check what you 
 
 ### 图形界面
 
-1. 双击 **`ArchivePasswordCracker.exe`**（或 `启动.bat`）
+1. 双击 **`ArchivePasswordToolkit.exe`**（或 `启动.bat`）
 2. 默认就在「**使用自定义字典**」页（主内容）：
    - 用 `选择字典...` 挑一个 `.txt`（或从 `历史字典 ▾` 里选以前用过的）
    - **把压缩包拖进那个蓝框** —— 自动用上面这本字典开始破解
@@ -413,7 +413,7 @@ python bz_crack.py -a "D:\test.zip" -d "dict.txt" --skip 10000 --limit 5000
 ## 目录结构
 
 ```
-ArchivePasswordCracker\
+ArchivePasswordToolkit\
 ├── cracker312.py                # 图形界面主程序（Python 3.12 + PySide6）
 ├── ui_mainwindow.py             # 由 UI/MainWindow.ui 转换而来
 ├── ui_aboutdialog.py            # 由 UI/AboutDialog.ui 转换而来
@@ -435,12 +435,12 @@ ArchivePasswordCracker\
 └── README.md
 ```
 
-编译出来的 `ArchivePasswordCracker.exe` 不打进源码包，它作为 Release 附件发布。
+编译出来的 `ArchivePasswordToolkit.exe` 不打进源码包，它作为 Release 附件发布。
 重新编译启动器（需要 MinGW-w64）：
 
 ```bat
 windres icon.rc -O coff -o icon_res.o
-gcc -O2 -municode -mwindows -o ArchivePasswordCracker.exe launcher.c icon_res.o
+gcc -O2 -municode -mwindows -o ArchivePasswordToolkit.exe launcher.c icon_res.o
 ```
 
 ---
@@ -506,7 +506,7 @@ zip 结构解析不出来时，快速路径会自动关闭并回落。
 
 ## 作者
 
-**bakeryg** — <https://github.com/bakeryg/ArchivePasswordCracker>
+**bakeryg** — <https://github.com/bakeryg/archive-password-toolkit>
 
 MIT 许可，版权声明在 [`LICENSE`](LICENSE)，完整的署名与第三方来源在 [`AUTHORS.md`](AUTHORS.md)。
 
@@ -514,39 +514,17 @@ MIT 许可，版权声明在 [`LICENSE`](LICENSE)，完整的署名与第三方�
 
 只有从上面这个仓库发布出来的才算官方版本。拿到文件后可以这样核对：
 
-1. **签名标签（最硬的一条）** —— 每个版本都打了标签（如 `v1.0.0`）并且**带签名**，GitHub 会在标签旁显示 *Verified* 徽章。没有徽章、或签名验证不通过的，不是作者发布的。
+1. **签名标签** —— 每个版本都打了标签（如 `v1.0.0`）并且**带签名**，GitHub 会在标签旁显示 *Verified* 徽章。没有徽章、或签名验证不通过的，不是作者发布的。
 2. **SHA256** —— 和你下载到的文件比对（校验值写在 Release 说明里）：
 
    ```bat
-   certutil -hashfile ArchivePasswordCracker.zip SHA256
+   certutil -hashfile ArchivePasswordToolkit.zip SHA256
    ```
 
 3. **提交记录** —— 每一笔提交都绑定作者账号、时间由 GitHub 服务器记录，早于任何别处的副本。
 
-> 如果你手上的渠道声称是本项目、但并非来自 `github.com/bakeryg/ArchivePasswordCracker`，
+> 如果你手上的渠道声称是本项目、但并非来自 `github.com/bakeryg/archive-password-toolkit`，
 > 请当成未经审查的第三方代码。
-
-### 发布流程（作者自用：给版本打签名标签）
-
-用 SSH key 签名即可，**不需要装 GPG**。第一次配置一次：
-
-```bat
-git config --global user.name  "bakeryg"
-git config --global user.email "你的邮箱"
-git config --global gpg.format ssh
-git config --global user.signingkey %USERPROFILE%\.ssh\id_ed25519.pub
-```
-
-再把公钥加到 GitHub：Settings → SSH and GPG keys → New SSH key → **Key type 选 Signing Key**。
-以后每次发版：
-
-```bat
-git tag -s v1.0.0 -m "ArchivePasswordCracker v1.0.0"
-git push origin v1.0.0
-```
-
-推上去后标签旁会出现 *Verified*。要强制所有提交都签名，可以在仓库 Settings → Branches
-里给主分支打开 **Require signed commits**。
 
 ## 致谢
 

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# ArchivePasswordCracker —— 基于 Bandizip 引擎的压缩包密码破解工具
+# Archive Password Toolkit —— 基于 Bandizip 引擎的压缩包密码破解工具
 # Copyright (c) 2026 bakeryg
 # SPDX-License-Identifier: MIT
-# 项目地址: https://github.com/bakeryg/ArchivePasswordCracker
+# 项目地址: https://github.com/bakeryg/archive-password-toolkit
 # ---------------------------------------------------------------------------
 """
 zipprobe.py —— zip 密码的「进程内快速预筛」
