@@ -1,19 +1,18 @@
 @echo off
 rem  Copyright (c) 2026 bakeryg - MIT   github.com/bakeryg/ArchivePasswordCracker
 setlocal EnableExtensions
-chcp 65001 >nul 2>nul
 title Bandizip detector - ArchivePasswordCracker
 
 echo ============================================================
-echo   Bandizip detector
-echo   for ArchivePasswordCracker
+echo   Bandizip 检测工具  /  Bandizip detector
+echo   给 ArchivePasswordCracker 使用
 echo ============================================================
 echo.
 
 set "FOUND="
 set "BZPATH="
 
-echo [1/5] common install folders
+echo [1/5] 常见安装目录 / standard install folders
 call :try "%ProgramFiles%\Bandizip\bz.exe"
 call :try "%ProgramFiles(x86)%\Bandizip\bz.exe"
 call :try "%ProgramW6432%\Bandizip\bz.exe"
@@ -23,49 +22,51 @@ call :try "%~dp0bz.exe"
 call :try "%~dp0Bandizip\bz.exe"
 call :try "%~dp0..\bz.exe"
 
-echo [2/5] PATH environment variable
+echo [2/5] 环境变量 PATH
 for /f "delims=" %%p in ('where bz.exe 2^>nul') do call :try "%%p"
 
-echo [3/5] registry (uninstall entries)
+echo [3/5] 注册表 / registry
 call :regscan "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 call :regscan "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 call :regscan "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 call :regscan "HKLM\SOFTWARE\Bandizip"
 call :regscan "HKCU\SOFTWARE\Bandizip"
 
-echo [4/5] scanning drive roots (portable copies)
+echo [4/5] 扫描各盘查找便携版 / scanning drives
 if defined BZPATH goto :skipscan
 for %%d in (C D E F G H I J) do call :scanroot "%%d"
 :skipscan
 
 echo.
-echo [5/5] RESULT
+echo [5/5] 结果 / RESULT
 echo ------------------------------------------------------------
 if not defined BZPATH goto :notfound
 
-echo   FOUND:
+echo   FOUND 找到:
 echo     %BZPATH%
 echo.
 > "%~dp0bz_path.txt" echo %BZPATH%
-echo   saved to bz_path.txt
-echo   ArchivePasswordCracker reads this file on startup.
+echo   已写入 bz_path.txt   (saved to bz_path.txt)
+echo   ArchivePasswordCracker 启动时会自动读取它
 echo.
 echo ------------------------------------------------------------
-echo   You can now run ArchivePasswordCracker.exe
+echo   现在可以启动 ArchivePasswordCracker.exe 了
 goto :end
 
 :notfound
-echo   NOT FOUND - could not locate Bandizip's bz.exe
+echo   NOT FOUND 没有找到 Bandizip 的 bz.exe
 echo ------------------------------------------------------------
 echo.
-echo   Please install Bandizip first (the free version is enough):
+echo   请先安装 Bandizip（免费版就够）:
 echo     https://www.bandisoft.com/bandizip/
-echo     keeping the default install folder is easiest
+echo     安装时保持默认目录即可
 echo.
-echo   If you use a portable / green build:
-echo     1) put the whole Bandizip folder next to this program, or
-echo     2) create bz_path.txt containing one line:
-echo        the full path of bz.exe
+echo   如果你用的是便携版 / 绿色版:
+echo     1) 把 Bandizip 整个文件夹放到本程序旁边，或
+echo     2) 新建一个 bz_path.txt，里面只写一行 bz.exe 的完整路径
+echo.
+echo   Please install Bandizip first, or write the full path of
+echo   bz.exe into bz_path.txt next to this script.
 goto :end
 
 :end
@@ -75,16 +76,15 @@ endlocal
 exit /b 0
 
 
-rem ================= subroutines =================
-rem Deliberately avoids  if ( ... )  blocks:
-rem a "(x86)" inside a path would close the block early
-rem and break the script.
+rem ================= 子过程 =================
+rem 刻意不使用 if ( ... ) 括号块：
+rem 路径里的 "(x86)" 会提前闭合括号，导致语法错误。
 
 :try
 if defined BZPATH exit /b 0
 if not exist %1 exit /b 0
 set "BZPATH=%~f1"
-echo        found: %~f1
+echo        找到 / found: %~f1
 exit /b 0
 
 :regscan
