@@ -319,15 +319,66 @@ def seed_of(digits, lower, upper, symbols):
     return s
 
 
-def gen_passwords(seed, mn, mx):
-    """按位数从小到大枚举所有组合。"""
+def gen_passwords(seed, mn, mx, fixed=None):
+    """按位数从小到大枚举所有组合。
+
+    fixed: {位置(从 1 开始): 字符} —— 这些位置写死，只有其余位置才用 seed 枚举。
+           例：{1: "a", 3: "7"} 表示第 1 位是 a、第 3 位是 7。
+           值写多个字符时从该位置起连续写死：{1: "abc"} 等于 1=a,2=b,3=c（也就是前缀 abc）。
+    """
+    fixed = fixed or {}
     for n in range(mn, mx + 1):
-        for tup in itertools.product(seed, repeat=n):
-            yield "".join(tup)
+        pre = {}                        # 当前长度下，各位置的固定字符
+        for pos, val in fixed.items():
+            for k, ch in enumerate(val):
+                p = pos + k
+                if p <= n:
+                    pre[p] = ch
+        free = [i for i in range(1, n + 1) if i not in pre]
+        for tup in itertools.product(seed, repeat=len(free)):
+            out = [""] * n
+            for p, ch in pre.items():
+                out[p - 1] = ch
+            for p, ch in zip(free, tup):
+                out[p - 1] = ch
+            yield "".join(out)
 
 
-def total_of(seed, mn, mx):
-    return sum(len(seed) ** n for n in range(mn, mx + 1))
+def total_of(seed, mn, mx, fixed=None):
+    """组合总数（有固定位时只数真正要枚举的那些位置）。"""
+    fixed = fixed or {}
+    total = 0
+    for n in range(mn, mx + 1):
+        used = 0
+        for pos, val in fixed.items():
+            for k in range(len(val)):
+                if pos + k <= n:
+                    used += 1
+        total += len(seed) ** (n - used)
+    return total
+
+
+def parse_fixed_positions(text):
+    """把「1=a,3=7」解析成 {1: "a", 3: "7"}（位置从 1 开始数）。
+
+    * 多组用逗号 / 分号 / 空格分开（中文逗号、中文分号也行）；
+    * 值可以写多个字符，表示从该位置起连续写死：1=abc 等于 1=a,2=b,3=c；
+    * 格式不对时抛 ValueError，消息直接给用户看。
+    """
+    raw = (text or "").replace("，", ",").replace("；", ";")
+    parts = [c for c in raw.replace(";", " ").replace(",", " ").split() if c]
+    out = {}
+    for part in parts:
+        if "=" not in part:
+            raise ValueError("「%s」写法不对，应该是 位置=字符，例如 1=a,3=7" % part)
+        k, v = part.split("=", 1)
+        k = k.strip()
+        if not k.isdigit() or int(k) < 1:
+            raise ValueError("「%s」里的位置要是从 1 开始的数字" % part)
+        if v == "":
+            raise ValueError("「%s」没有写固定的字符" % part)
+        out[int(k)] = v
+    return out
 
 
 # ----------------------------------------------------------------------
@@ -610,10 +661,11 @@ class ExportWorker(QThread):
     finished_ok = Signal(str, int)
     error = Signal(str)
 
-    def __init__(self, path, seed, mn, mx, total, parent=None):
+    def __init__(self, path, seed, mn, mx, total, fixed=None, parent=None):
         QThread.__init__(self, parent)
         self.path = path
         self.seed = seed
+        self.fixed = fixed or {}
         self.mn = mn
         self.mx = mx
         self.total = total
@@ -626,7 +678,7 @@ class ExportWorker(QThread):
         n = 0
         try:
             with open(self.path, "w", encoding="utf-8", newline="\n") as f:
-                for pw in gen_passwords(self.seed, self.mn, self.mx):
+                for pw in gen_passwords(self.seed, self.mn, self.mx, self.fixed):
                     if self._stop.is_set():
                         break
                     f.write(pw + "\n")
@@ -710,6 +762,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # 把「当前字典 + 选择/历史 + 拖入框」并进「使用自定义字典」页
         self._build_drop_area()
+        self._build_fixed_row()
         self._build_extract_button()
 
         # 主内容是「自定义字典 + 拖入」，所以把它排到第一个并默认打开，
@@ -874,6 +927,50 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.drop_area.dropped.connect(self.on_drop_file)
         lay.addWidget(self.drop_area, 3, 0, 1, 3)
 
+    def _build_fixed_row(self):
+        """在枚举页加一行「固定位」输入：把某几位写死，只枚举其余位。"""
+        row = QHBoxLayout()
+        lab = QLabel("固定位", self.page_internal)
+        self.fixed_edit = QLineEdit(self.page_internal)
+        self.fixed_edit.setPlaceholderText("例如 1=a,3=7（留空＝全部枚举）")
+        tip = ("把某些位置写死，只枚举其它位。写法：位置=字符，多个用逗号分开，例如\n"
+               "    1=a,3=7   第 1 位是 a、第 3 位是 7\n"
+               "    1=abc     前缀是 abc（等于 1=a,2=b,3=c）\n"
+               "留空＝不固定。位置从 1 开始数；固定位要求的最短长度不够时，\n"
+               "会自动把「最低位数」提到那个长度。")
+        lab.setToolTip(tip)
+        self.fixed_edit.setToolTip(tip)
+        row.addWidget(lab)
+        row.addWidget(self.fixed_edit)
+        lay = getattr(self, "verticalLayout_2", None)     # 枚举页的竖向布局
+        if lay is not None:
+            lay.insertLayout(2, row)                      # 放在「位数」和「导出字典」之间
+        else:
+            self.verticalLayout.addLayout(row)
+
+    def get_internal_params(self):
+        """枚举页的参数：(字符集, 最低位, 最高位, 固定位)。
+
+        固定位写错、或要求的长度超过位数上限时，弹提示并返回 None。
+        """
+        try:
+            fixed = parse_fixed_positions(
+                self.fixed_edit.text() if hasattr(self, "fixed_edit") else "")
+        except ValueError as e:
+            QMessageBox.warning(self, MSG_WARNING, str(e))
+            return None
+        seed = self.get_seed()
+        mn, mx = self.get_digit_range()
+        need = max([pos + len(val) - 1 for pos, val in fixed.items()] or [0])
+        if need > mx:
+            QMessageBox.warning(self, MSG_WARNING,
+                                "固定位要求密码至少有 %d 位，但「最高位数」只有 %d。\n"
+                                "请把最高位数改大，或删掉超出范围的固定位。" % (need, mx))
+            return None
+        if need > mn:
+            mn = need           # 比 need 还短的长度里放不下固定位，直接从 need 起枚举
+        return seed, mn, mx, fixed
+
     def _build_extract_button(self):
         """在「解压位置」那一行加一个手动解压按钮。"""
         self.btn_extract = QPushButton("解压", self.groupBox)
@@ -1024,15 +1121,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             QMessageBox.warning(self, MSG_WARNING, "请选择字典导出路径")
             return
 
-        seed = self.get_seed()
-        mn, mx = self.get_digit_range()
-        total = total_of(seed, mn, mx)
+        params = self.get_internal_params()
+        if params is None:
+            return
+        seed, mn, mx, fixed = params
+        total = total_of(seed, mn, mx, fixed)
 
         self.progress_export.setValue(0)
         self.button_export.setText(STOP_EXPORT)
         self.statusbar.showMessage("正在导出字典… 共 %d 条组合" % total)
 
-        self.export_worker = ExportWorker(path, seed, mn, mx, total, self)
+        self.export_worker = ExportWorker(path, seed, mn, mx, total, fixed, self)
         self.export_worker.progress.connect(self.progress_export.setValue)
         self.export_worker.finished_ok.connect(self.on_export_done)
         self.export_worker.error.connect(lambda m: QMessageBox.warning(self, MSG_WARNING, m))
@@ -1106,11 +1205,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if mode == "internal":
             if not self.validate_bool():
                 return
-            seed = self.get_seed()
-            mn, mx = self.get_digit_range()
-            total = total_of(seed, mn, mx)
-            source = gen_passwords(seed, mn, mx)
-            src_desc = "枚举: %s  位数 %d~%d  共 %d 种组合" % (seed, mn, mx, total)
+            params = self.get_internal_params()
+            if params is None:
+                return
+            seed, mn, mx, fixed = params
+            total = total_of(seed, mn, mx, fixed)
+            source = gen_passwords(seed, mn, mx, fixed)
+            fix_desc = ("  固定位 " + ",".join("%d=%s" % (p, v)
+                                               for p, v in sorted(fixed.items()))) if fixed else ""
+            src_desc = "枚举: %s  位数 %d~%d%s  共 %d 种组合" % (seed, mn, mx, fix_desc, total)
         else:
             path = self.dict_path.text().strip()
             if not path:

@@ -90,7 +90,10 @@ Alternatively, create `bz_path.txt` yourself containing a single line: the full 
    - **drop the archive onto the blue box** — it starts cracking with that wordlist
    - (clicking the blue box opens a file dialog instead)
 3. To brute-force instead: switch to the **Enumeration** tab, tick character sets and a
-   length range, then go straight to *Start* (or *Export dictionary* first).
+   length range, then go straight to *Start* (or *Export dictionary* first). The optional
+   **固定位** (fixed positions) box pins individual positions: `1=a,3=7` means position 1 is
+   `a` and position 3 is `7` while everything else is enumerated, and `1=abc` is just a
+   prefix. Leave it empty to enumerate everything.
 4. Optionally choose an extraction folder (leave it empty to only display the password).
 5. Click **Start**.
 
@@ -367,6 +370,8 @@ Only builds published from the repository above are official. To check what you 
    - **把压缩包拖进那个蓝框** —— 自动用上面这本字典开始破解
    - （也可以点一下蓝框用文件对话框选压缩包）
 3. 想改用穷举：切到「**枚举破解**」页，勾字符集、设位数，直接「开始破解」（也可以先「导出字典」）
+   - 「**固定位**」可选：把某几位写死，只枚举其余位。写法是 `位置=字符`，多个用逗号分开：
+     `1=a,3=7` 表示第 1 位是 `a`、第 3 位是 `7`；`1=abc` 就是前缀 `abc`。留空＝全部枚举
 4. 可选：选一个解压位置（留空则只显示密码、不解压）
 
 命中密码后，如果填了解压位置会自动解压；也可以随时点那一行右边的「**解压**」按钮手动解压 ——
